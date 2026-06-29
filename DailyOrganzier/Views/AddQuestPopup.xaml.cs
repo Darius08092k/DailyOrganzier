@@ -1,22 +1,23 @@
 using System;
 using DailyOrganzier.Models;
+using CommunityToolkit.Maui.Views;
 
 namespace DailyOrganzier.Views;
 
 // The explicit path below (CommunityToolkit.Maui.Views.Popup) is what fixes the 'Close' error.
-public partial class AddQuestPopup : CommunityToolkit.Maui.Views.Popup
+public partial class AddQuestPopup : Popup<Quest>
 {
     public AddQuestPopup()
     {
         InitializeComponent();
     }
 
-    private void OnCancelClicked(object sender, EventArgs e)
+    private async void OnCancelClicked(object sender, EventArgs e)
     {
-        Close(null);
+        await CloseAsync(null);
     }
 
-    private void OnSaveClicked(object sender, EventArgs e)
+    private async void OnSaveClicked(object sender, EventArgs e)
     {
         if (string.IsNullOrWhiteSpace(TitleEntry.Text))
         {
@@ -36,6 +37,6 @@ public partial class AddQuestPopup : CommunityToolkit.Maui.Views.Popup
             XpReward = xp
         };
 
-        Close(newQuest);
+        await CloseAsync(newQuest);
     }
 }
