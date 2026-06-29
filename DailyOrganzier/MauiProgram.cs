@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using DailyOrganzier.Services;
+using DailyOrganzier.Services.Interfaces;
+using DailyOrganzier.ViewModels;
+using Microsoft.Extensions.Logging;
 
 namespace DailyOrganzier
 {
@@ -15,8 +18,17 @@ namespace DailyOrganzier
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+            // 1. Register Game Engine (Service)
+            builder.Services.AddSingleton<IStatsService, StatsService>();
+
+            // 2. Register Presentation Logic (ViewModels)
+            builder.Services.AddTransient<MainViewModel>();
+
+            // 3. Register UI (Views)
+            builder.Services.AddTransient<MainPage>();
+
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             return builder.Build();

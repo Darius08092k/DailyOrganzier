@@ -6,13 +6,61 @@
              xmlns:models="clr-namespace:DailyOrganzier.Models"
              BackgroundColor="#121212">
 
-    <ContentPage.BindingContext>
-        <vm:MainViewModel />
-    </ContentPage.BindingContext>
-
     <Grid RowDefinitions="Auto, *, Auto" Padding="20, 50, 20, 40">
+        <!--#region Title region-->
+        <Grid Grid.Row="0"
+              ColumnDefinitions="*, Auto"
+              Margin="0,0,0,30">
+            <VerticalStackLayout Grid.Column="0"
+                                 VerticalOptions="Center">
+                <Label Text="{Binding TodayDate}" FontSize="16" TextColor="#888888" FontAttributes="Bold"/>
+                <Label Text="Today's Quests" FontSize="32" TextColor="White"
+                       FontAttributes="Bold"/>
+            </VerticalStackLayout>
 
-       
+            <Border Grid.Column="1" WidthRequest="60" HeightRequest="60" 
+                    StrokeShape="RoundRectangle 30" 
+                    Stroke="#4CAF50" 
+                    StrokeThickness="2" 
+                    BackgroundColor="#222222">
+                <Label Text="D" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center" FontAttributes="Bold" FontSize="24"/>
+            </Border>
+        </Grid>
+        <!--#endregion-->
+
+        <CollectionView Grid.Row="1" ItemsSource="{Binding ActiveQuests}" ItemsLayout="HorizontalList" VerticalOptions="Fill">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Quest">
+                    <Border Stroke="#333333" StrokeThickness="1" StrokeShape="RoundRectangle 20" BackgroundColor="#1E1E1E" WidthRequest="280" Margin="0,0,20,0" Padding="20">
+                        <Grid RowDefinitions="Auto, *, Auto">
+
+                            <Grid Grid.Row="0" ColumnDefinitions="*, Auto">
+                                <Label Grid.Column="0" Text="{Binding Type}" TextColor="#A0A0A0" FontSize="14" FontAttributes="Bold" />
+                                <Label Grid.Column="1" Text="{Binding XpReward, StringFormat='+{0} XP'}" TextColor="#FFD700" FontSize="14" FontAttributes="Bold" />
+                            </Grid>
+
+                            <Label Grid.Row="1" Text="{Binding Title}" TextColor="White" FontSize="24" FontAttributes="Bold" VerticalOptions="Center" />
+
+                            <Button Grid.Row="2" Text="COMPLETE" BackgroundColor="#4CAF50" TextColor="White" CornerRadius="12" HeightRequest="55" FontSize="16" FontAttributes="Bold"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainViewModel}}, Path=CompleteQuestCommand}"
+                                    CommandParameter="{Binding .}" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Border Grid.Row="2" BackgroundColor="#1E1E1E" Stroke="#333333" StrokeThickness="1" StrokeShape="RoundRectangle 20" Padding="25" Margin="0,30,0,0">
+            <VerticalStackLayout Spacing="12">
+                <Grid ColumnDefinitions="*, Auto">
+                    <Label Grid.Column="0" Text="{Binding Stats.CurrentLevel, StringFormat='LVL {0}'}" TextColor="White" FontAttributes="Bold" FontSize="18" />
+                    <Label Grid.Column="1" Text="{Binding Stats.XpProgress, StringFormat='{0:P0}'}" TextColor="#A0A0A0" FontSize="16" />
+                </Grid>
+
+                <ProgressBar Progress="{Binding Stats.XpProgress}" ProgressColor="#4CAF50" HeightRequest="12" />
+            </VerticalStackLayout>
+        </Border>
+
     </Grid>
 
 </ContentPage>
