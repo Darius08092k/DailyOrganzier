@@ -1,4 +1,7 @@
-﻿using DailyOrganzier.ViewModels;
+﻿using CommunityToolkit.Maui.Extensions;
+using DailyOrganzier.Models;
+using DailyOrganzier.ViewModels;
+using DailyOrganzier.Views;
 
 namespace DailyOrganzier
 {
@@ -13,5 +16,7 @@ namespace DailyOrganzier
             // Assign the injected ViewModel to the page's BindingContext
             BindingContext = viewModel;
         }
+
+        
     }
 }

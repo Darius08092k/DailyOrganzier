@@ -15,25 +15,43 @@ namespace DailyOrganzier.ViewModels
         public UserStats Stats => _statsService.Stats;
         public ObservableCollection<Quest> ActiveQuests => _statsService.ActiveQuests;
 
+        // Variables
+        public string TodayDate => DateTime.Now.ToString("dd MMM yyyy").ToUpper();
         // Commands
         public ICommand CompleteQuestCommand { get; }
+        public ICommand AddQuestCommand { get; }
 
         private readonly IStatsService _statsService;
-        public MainViewModel(IStatsService statsService)
+        private readonly IQuestPopupService _questPopupService;
+
+        public MainViewModel(IStatsService statsService, IQuestPopupService questPopupService)
         {
             _statsService = statsService;
-            
+            _questPopupService = questPopupService;
+
             // Insert mock data
             _statsService.ActiveQuests = new ObservableCollection<Quest>
             {
-                new Quest { Title = "Resolve a bug", Type = "CODING", XpReward = 50 },
-                new Quest { Title = "Go for a run", Type = "FITNESS", XpReward = 75 },
-                new Quest { Title = "Edit TikTok", Type = "CREATIVE", XpReward = 100 },
-                new Quest { Title = "Clean Setup", Type = "CHORES", XpReward = 30 }
+                new Quest { Title = "Make your bed", Type = "CHORES", XpReward = 5 },
+                new Quest { Title = "Daily workout", Type = "FITNESS", XpReward = 10 },
+                new Quest { Title = "Clean Setup", Type = "CHORES", XpReward = 10 }
             };
 
             // Wire up the command to execute the service's method
             CompleteQuestCommand = new Command<Quest>(_statsService.CompleteQuest);
+
+            AddQuestCommand = new Command(async () =>
+            {
+                // 1. Await the service directly and capture the result
+                var newQuest = await _questPopupService.ShowAddQuestPopup();
+
+                // 2. Check if the user actually created a quest (didn't hit cancel)
+                if (newQuest != null)
+                {
+                    // 3. Add it to the list
+                    _statsService.ActiveQuests.Add(newQuest);
+                }
+            });
         }
 
     }

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               x:Class="DailyOrganzier.Views.AddQuestPopup"
+               CanBeDismissedByTappingOutsideOfPopup="True">
+
+    <Border Padding="20" BackgroundColor="#1E1E1E" StrokeShape="RoundRectangle 10" StrokeThickness="0" WidthRequest="320">
+        <VerticalStackLayout Spacing="15">
+            <Label Text="Add New Quest" FontSize="20" FontAttributes="Bold" TextColor="White"/>
+
+            <Entry x:Name="TitleEntry" Placeholder="Quest Title" TextColor="White" PlaceholderColor="Gray"/>
+
+            <Entry x:Name="XpEntry" Placeholder="XP Reward (e.g., 50)" Keyboard="Numeric" TextColor="White" PlaceholderColor="Gray"/>
+
+            <HorizontalStackLayout Spacing="15" HorizontalOptions="End" Margin="0,10,0,0">
+                <Button Text="Cancel" BackgroundColor="Transparent" TextColor="Gray" Clicked="OnCancelClicked"/>
+                <Button Text="Save Quest" BackgroundColor="#4CAF50" TextColor="White" Clicked="OnSaveClicked"/>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </Border>
+</toolkit:Popup>

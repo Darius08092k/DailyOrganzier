@@ -2,6 +2,7 @@
 using DailyOrganzier.Services.Interfaces;
 using DailyOrganzier.ViewModels;
 using Microsoft.Extensions.Logging;
+using CommunityToolkit.Maui;
 
 namespace DailyOrganzier
 {
@@ -12,6 +13,7 @@ namespace DailyOrganzier
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -20,6 +22,7 @@ namespace DailyOrganzier
 
             // 1. Register Game Engine (Service)
             builder.Services.AddSingleton<IStatsService, StatsService>();
+            builder.Services.AddSingleton<IQuestPopupService, QuestPopupService>();
 
             // 2. Register Presentation Logic (ViewModels)
             builder.Services.AddTransient<MainViewModel>();
