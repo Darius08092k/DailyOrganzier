@@ -1,4 +1,6 @@
-﻿using DailyOrganzier.Models;
+﻿using CommunityToolkit.Maui.Core.Extensions;
+using DailyOrganzier.HelperClasses.Enums;
+using DailyOrganzier.Models;
 using DailyOrganzier.Services;
 using DailyOrganzier.Services.Interfaces;
 using System;
@@ -23,19 +25,15 @@ namespace DailyOrganzier.ViewModels
 
         private readonly IStatsService _statsService;
         private readonly IQuestPopupService _questPopupService;
+        private readonly IDailyQuests _dailyQuests;
 
-        public MainViewModel(IStatsService statsService, IQuestPopupService questPopupService)
+        public MainViewModel(IStatsService statsService, IQuestPopupService questPopupService, IDailyQuests dailyQuests)
         {
             _statsService = statsService;
             _questPopupService = questPopupService;
+            _dailyQuests = dailyQuests;
 
-            // Insert mock data
-            _statsService.ActiveQuests = new ObservableCollection<Quest>
-            {
-                new Quest { Title = "Make your bed", Type = "CHORES", XpReward = 5 },
-                new Quest { Title = "Daily workout", Type = "FITNESS", XpReward = 10 },
-                new Quest { Title = "Clean Setup", Type = "CHORES", XpReward = 10 }
-            };
+            _statsService.ActiveQuests = dailyQuests.GetRandomQuest(3).ToObservableCollection();
 
             // Wire up the command to execute the service's method
             CompleteQuestCommand = new Command<Quest>(_statsService.CompleteQuest);

@@ -3,6 +3,8 @@ using DailyOrganzier.Services.Interfaces;
 using DailyOrganzier.ViewModels;
 using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
+using DailyOrganzier.HelperClasses.Enums;
+using DailyOrganzier.HelperClasses;
 
 namespace DailyOrganzier
 {
@@ -23,6 +25,7 @@ namespace DailyOrganzier
             // 1. Register Game Engine (Service)
             builder.Services.AddSingleton<IStatsService, StatsService>();
             builder.Services.AddSingleton<IQuestPopupService, QuestPopupService>();
+            builder.Services.AddSingleton<IDailyQuests, DailyQuests>();
 
             // 2. Register Presentation Logic (ViewModels)
             builder.Services.AddTransient<MainViewModel>();

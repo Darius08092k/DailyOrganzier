@@ -16,7 +16,11 @@ public partial class AddQuestPopup : Popup<Quest>
     {
         await CloseAsync(null);
     }
-
+    // TODO: Add validation for the TitleEntry and XpEntry fields, and display an error message if the input is invalid.
+    // TODO: Add a check to ensure that the XpEntry field is a valid integer, and display an error message if it is not.
+    // TODO: Add a check to ensure that the XpEntry field is not negative, and display an error message if it is.
+    // TODO: Add a check to ensure that the TitleEntry field is not empty, and display an error message if it is.
+    // TODO: Add a chekc to ensure that the XP is not too high, and display an error message if it is.
     private async void OnSaveClicked(object sender, EventArgs e)
     {
         if (string.IsNullOrWhiteSpace(TitleEntry.Text))
@@ -34,6 +38,7 @@ public partial class AddQuestPopup : Popup<Quest>
         {
             Id = Guid.NewGuid().ToString(),
             Title = TitleEntry.Text,
+            Type = CategoryPicker.SelectedItem.ToString(),
             XpReward = xp
         };
 

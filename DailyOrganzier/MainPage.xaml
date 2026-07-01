@@ -9,37 +9,37 @@
     <Grid RowDefinitions="Auto, *, Auto" Padding="20, 50, 20, 40">
         <!--#region Title region-->
         <Grid Grid.Row="0"
-              ColumnDefinitions="*, Auto"
-              Margin="0,0,0,30">
+          ColumnDefinitions="*, Auto"
+          Margin="0,0,0,30">
             <VerticalStackLayout Grid.Column="0"
-                                 VerticalOptions="Center">
+                             VerticalOptions="Center">
                 <Label Text="{Binding TodayDate}" FontSize="16" TextColor="#888888" FontAttributes="Bold"/>
                 <HorizontalStackLayout>
                     <Label Text="Today's Quests" FontSize="32" TextColor="White"
-                        FontAttributes="Bold"/>
+                    FontAttributes="Bold"/>
                     <Button Text="+" 
-                            FontSize="24" 
-                            FontAttributes="Bold" 
-                            WidthRequest="30" 
-                            HeightRequest="30" 
-                            CornerRadius="10"
-                            HorizontalOptions="Center" 
-                            VerticalOptions="Start" 
-                            Margin="10,0,0,0"
-                            Padding="0, -2, 0, 0"
-                            BackgroundColor="#4CAF50" 
-                            TextColor="White"
-                            Command="{Binding AddQuestCommand}" />
+                        FontSize="24" 
+                        FontAttributes="Bold" 
+                        WidthRequest="30" 
+                        HeightRequest="30" 
+                        CornerRadius="10"
+                        HorizontalOptions="Center" 
+                        VerticalOptions="Start" 
+                        Margin="10,0,0,0"
+                        Padding="0, -2, 0, 0"
+                        BackgroundColor="#4CAF50" 
+                        TextColor="White"
+                        Command="{Binding AddQuestCommand}" />
                 </HorizontalStackLayout>
 
 
             </VerticalStackLayout>
 
             <Border Grid.Column="1" WidthRequest="60" HeightRequest="60" 
-                    StrokeShape="RoundRectangle 30" 
-                    Stroke="#4CAF50" 
-                    StrokeThickness="2" 
-                    BackgroundColor="#222222">
+                StrokeShape="RoundRectangle 30" 
+                Stroke="#4CAF50" 
+                StrokeThickness="2" 
+                BackgroundColor="#222222">
                 <Label Text="D" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center" FontAttributes="Bold" FontSize="24"/>
             </Border>
         </Grid>
@@ -59,8 +59,8 @@
                             <Label Grid.Row="1" Text="{Binding Title}" TextColor="White" FontSize="24" FontAttributes="Bold" VerticalOptions="Center" />
 
                             <Button Grid.Row="2" Text="COMPLETE" BackgroundColor="#4CAF50" TextColor="White" CornerRadius="12" HeightRequest="55" FontSize="16" FontAttributes="Bold"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainViewModel}}, Path=CompleteQuestCommand}"
-                                    CommandParameter="{Binding .}" />
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainViewModel}}, Path=CompleteQuestCommand}"
+                                CommandParameter="{Binding .}" />
                         </Grid>
                     </Border>
                 </DataTemplate>
