@@ -11,5 +11,7 @@ namespace DailyOrganzier.Services.Interfaces
         public UserStats Stats { get; set; }
         public ObservableCollection<Quest> ActiveQuests { get; set; }
         public void CompleteQuest(Quest quest);
+        public Task InitializeAsync();
+        public Task AddQuestAsync(Quest quest);
     }
 }

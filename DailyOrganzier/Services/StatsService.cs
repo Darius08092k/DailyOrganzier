@@ -9,14 +9,46 @@ namespace DailyOrganzier.Services
 {
     public class StatsService : IStatsService
     {
-        
+        private readonly ILocalDatabaseService _databaseService;
 
         public UserStats Stats { get; set; }
         public ObservableCollection<Quest> ActiveQuests { get; set; }
-        public StatsService()
+
+        public StatsService(ILocalDatabaseService databaseService)
         {
+            _databaseService = databaseService;
             Stats = new UserStats();
             ActiveQuests = new ObservableCollection<Quest>();
+        }
+
+        public async Task InitializeAsync()
+        {
+            try
+            {
+                var questsFromDb = await _databaseService.GetQuestsAsync();
+                foreach (var quest in questsFromDb)
+                {
+                    ActiveQuests.Add(quest);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading quests from database: {ex.Message}");
+            }
+        }
+
+        public async Task AddQuestAsync(Quest quest)
+        {
+            try
+            {
+                ActiveQuests.Add(quest);
+                await _databaseService.SaveQuestAsync(quest);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error saving quest to database: {ex.Message}");
+                ActiveQuests.Remove(quest);
+            }
         }
 
         public void CompleteQuest(Quest quest)
@@ -40,6 +72,9 @@ namespace DailyOrganzier.Services
                 Stats.XpToNextLevel = (int)(Stats.XpToNextLevel * 3);
             }
 
+            // Save the deleted quest to database
+            _ = _databaseService.DeleteQuestAsync(quest);
         }
+
     }
 }

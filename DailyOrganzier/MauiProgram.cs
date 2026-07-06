@@ -26,6 +26,7 @@ namespace DailyOrganzier
             builder.Services.AddSingleton<IStatsService, StatsService>();
             builder.Services.AddSingleton<IQuestPopupService, QuestPopupService>();
             builder.Services.AddSingleton<IDailyQuests, DailyQuests>();
+            builder.Services.AddSingleton<ILocalDatabaseService, LocalDatabaseService>();
 
             // 2. Register Presentation Logic (ViewModels)
             builder.Services.AddTransient<MainViewModel>();
