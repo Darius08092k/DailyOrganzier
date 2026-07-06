@@ -17,11 +17,6 @@ namespace DailyOrganzier.Services
             _context = new AppDbContext();
         }
 
-        public Task InitializeAsync()
-        {
-            return Task.CompletedTask;
-        }
-
         public async Task<List<Quest>> GetQuestsAsync()
         {
             return await _context.Quests.ToListAsync();

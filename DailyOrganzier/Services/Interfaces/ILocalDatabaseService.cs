@@ -7,7 +7,6 @@ namespace DailyOrganzier.Services.Interfaces
 {
     public interface ILocalDatabaseService
     {
-        Task InitializeAsync();
         Task<List<Quest>> GetQuestsAsync();
         Task<int> SaveQuestAsync(Quest quest);
         Task<int> DeleteQuestAsync(Quest quest);

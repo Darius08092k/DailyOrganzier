@@ -23,10 +23,10 @@ namespace DailyOrganzier
                 });
 
             // 1. Register Game Engine (Service)
-            builder.Services.AddSingleton<IStatsService, StatsService>();
-            builder.Services.AddSingleton<IQuestPopupService, QuestPopupService>();
             builder.Services.AddSingleton<IDailyQuests, DailyQuests>();
             builder.Services.AddSingleton<ILocalDatabaseService, LocalDatabaseService>();
+            builder.Services.AddSingleton<IStatsService, StatsService>();
+            builder.Services.AddSingleton<IQuestPopupService, QuestPopupService>();
 
             // 2. Register Presentation Logic (ViewModels)
             builder.Services.AddTransient<MainViewModel>();

@@ -1,5 +1,6 @@
 ﻿using DailyOrganzier.Models;
 using DailyOrganzier.Services.Interfaces;
+using DailyOrganzier.HelperClasses.Enums;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,13 +11,15 @@ namespace DailyOrganzier.Services
     public class StatsService : IStatsService
     {
         private readonly ILocalDatabaseService _databaseService;
+        private readonly IDailyQuests _dailyQuests;
 
         public UserStats Stats { get; set; }
         public ObservableCollection<Quest> ActiveQuests { get; set; }
 
-        public StatsService(ILocalDatabaseService databaseService)
+        public StatsService(ILocalDatabaseService databaseService, IDailyQuests dailyQuests)
         {
             _databaseService = databaseService;
+            _dailyQuests = dailyQuests;
             Stats = new UserStats();
             ActiveQuests = new ObservableCollection<Quest>();
         }
@@ -25,15 +28,29 @@ namespace DailyOrganzier.Services
         {
             try
             {
-                var questsFromDb = await _databaseService.GetQuestsAsync();
-                foreach (var quest in questsFromDb)
+                var savedQuests = await _databaseService.GetQuestsAsync();
+
+                // If database is empty (first run), generate random quests
+                if (savedQuests == null || savedQuests.Count == 0)
                 {
-                    ActiveQuests.Add(quest);
+                    var randomQuests = _dailyQuests.GetRandomQuest(3);
+                    foreach (var quest in randomQuests)
+                    {
+                        await AddQuestAsync(quest);
+                    }
+                }
+                else
+                {
+                    // Load existing quests from database
+                    foreach (var quest in savedQuests)
+                    {
+                        MainThread.BeginInvokeOnMainThread(() => ActiveQuests.Add(quest));
+                    }
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error loading quests from database: {ex.Message}");
+                LogError("Error initializing quests from database", ex);
             }
         }
 
@@ -46,7 +63,7 @@ namespace DailyOrganzier.Services
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error saving quest to database: {ex.Message}");
+                LogError("Error saving quest to database", ex);
                 ActiveQuests.Remove(quest);
             }
         }
@@ -76,5 +93,12 @@ namespace DailyOrganzier.Services
             _ = _databaseService.DeleteQuestAsync(quest);
         }
 
+        /// <summary>
+        /// Helper method to log errors consistently across the service
+        /// </summary>
+        private static void LogError(string message, Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"{message}: {ex.Message}");
+        }
     }
 }

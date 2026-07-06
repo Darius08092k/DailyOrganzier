@@ -12,49 +12,38 @@ namespace DailyOrganzier.ViewModels
     public class AddQuestPopupViewModel : INotifyPropertyChanged
     {
         private string _errorType;
-        public string ErrorType { get => _errorType; 
-            set
-            {
-                _errorType = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ErrorType"));
-            }
+        public string ErrorType 
+        { 
+            get => _errorType; 
+            set => SetProperty(ref _errorType, value, nameof(ErrorType));
         }
 
         private QuestCategory? _selectedCategory;
-        public QuestCategory? SelectedCategory { get => _selectedCategory;
-            set
-            {
-                _selectedCategory = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedCategory"));
-            }
+        public QuestCategory? SelectedCategory 
+        { 
+            get => _selectedCategory;
+            set => SetProperty(ref _selectedCategory, value, nameof(SelectedCategory));
         }
 
         private uint? _xpEntry;
         public uint? XpEntry
         {
             get => _xpEntry;
-            set
-            {
-                _xpEntry = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("XpEntry"));
-            }
+            set => SetProperty(ref _xpEntry, value, nameof(XpEntry));
         }
 
         private string _title;
-        public string Title { get => _title; 
-            set
-            {
-                _title = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Title"));
-            }
+        public string Title 
+        { 
+            get => _title; 
+            set => SetProperty(ref _title, value, nameof(Title));
         }
 
         private bool _isErrorVisible;
-        public bool IsErrorVisible { get => _isErrorVisible;
-            set {
-                _isErrorVisible = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsErrorVisible"));
-            }
+        public bool IsErrorVisible 
+        { 
+            get => _isErrorVisible;
+            set => SetProperty(ref _isErrorVisible, value, nameof(IsErrorVisible));
         }
 
         // Commands
@@ -63,10 +52,23 @@ namespace DailyOrganzier.ViewModels
         // Actions 
         public Action<Quest> ClosePopupAction { get; set; }
 
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public AddQuestPopupViewModel()
         {
             SaveNewQuestCommand = new Command(SaveNewQuest);
+        }
+
+        /// <summary>
+        /// Helper method to set property values and raise PropertyChanged event
+        /// </summary>
+        private void SetProperty<T>(ref T field, T value, string propertyName)
+        {
+            if (!EqualityComparer<T>.Default.Equals(field, value))
+            {
+                field = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
         // TODO: Add validation for the TitleEntry and XpEntry fields, and display an error message if the input is invalid.
@@ -100,7 +102,6 @@ namespace DailyOrganzier.ViewModels
                 return;
             }
 
-
             IsErrorVisible = false;
             var newQuest = new Quest
             {
@@ -111,8 +112,5 @@ namespace DailyOrganzier.ViewModels
             };
             ClosePopupAction?.Invoke(newQuest);
         }
-        
-
-        public event PropertyChangedEventHandler? PropertyChanged;
     }
 }
