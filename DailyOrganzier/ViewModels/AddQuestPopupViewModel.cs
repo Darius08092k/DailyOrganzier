@@ -74,7 +74,7 @@ namespace DailyOrganzier.ViewModels
         {
             if (Title == null || Title.Trim() == "" )
             {
-                ErrorType = "Title cannot be empty.";
+                ErrorType = "Titleesesese cannot be empty.";
                 IsErrorVisible = true;
                 return;
             }
