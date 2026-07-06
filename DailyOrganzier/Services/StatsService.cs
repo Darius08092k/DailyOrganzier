@@ -28,25 +28,59 @@ namespace DailyOrganzier.Services
         {
             try
             {
+
+                // Check if a new day has started by comparing dates
+                DateTime lastLoginDate = Preferences.Default.Get("LastLoginDate", DateTime.MinValue);
+                bool isNewDay = lastLoginDate.Date < DateTime.Now.Date;
+
+                if(isNewDay)
+                {
+                    Preferences.Default.Set("LastLoginDate", DateTime.Now);
+                }
+
+                // Load quests from the database
+                await _dailyQuests.SeedSystemQuestsAsync();
                 var savedQuests = await _databaseService.GetQuestsAsync();
 
-                // If database is empty (first run), generate random quests
-                if (savedQuests == null || savedQuests.Count == 0)
+                // Trigger if it's a new day, OR if no quests are active at all (e.g., very first launch)
+                if (isNewDay || !savedQuests.Any(q => q.IsActive))
                 {
-                    var randomQuests = _dailyQuests.GetRandomQuest(3);
-                    foreach (var quest in randomQuests)
-                    {
-                        await AddQuestAsync(quest);
-                    }
-                }
-                else
-                {
-                    // Load existing quests from database
                     foreach (var quest in savedQuests)
                     {
-                        MainThread.BeginInvokeOnMainThread(() => ActiveQuests.Add(quest));
+                        if (quest.IsSystemQuest)
+                        {
+                            quest.IsActive = false; // Send it back to the inactive pool
+                            quest.IsCompleted = false;
+                            await _databaseService.SaveQuestAsync(quest);
+                        }
+                        else
+                        {
+                            // Delete personal one-off quests permanently
+                            await _databaseService.DeleteQuestAsync(quest);
+                        }
                     }
+
+                    // Assign 3 new quests from the pool
+                    await _dailyQuests.AssignRandomQuestsAsync(3);
+
+                    // Refresh the list after the updates
+                    savedQuests = await _databaseService.GetQuestsAsync();
                 }
+
+                // Get all active, incomplete quests
+                var activeQuests = savedQuests
+                    .Where(q => q.IsActive && !q.IsCompleted)
+                    .ToList();
+
+                // Update the ObservableCollection on the main thread, all at once
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    ActiveQuests.Clear();
+                    foreach (var quest in activeQuests)
+                    {
+                        ActiveQuests.Add(quest);
+                    }
+                });
             }
             catch (Exception ex)
             {
@@ -89,8 +123,9 @@ namespace DailyOrganzier.Services
                 Stats.XpToNextLevel = (int)(Stats.XpToNextLevel * 3);
             }
 
-            // Save the deleted quest to database
-            _ = _databaseService.DeleteQuestAsync(quest);
+            // Mark as completed and update the database instead of deleting
+            quest.IsCompleted = true;
+            _ = _databaseService.SaveQuestAsync(quest);
         }
 
         /// <summary>
@@ -100,5 +135,42 @@ namespace DailyOrganzier.Services
         {
             System.Diagnostics.Debug.WriteLine($"{message}: {ex.Message}");
         }
+
+        /// <summary>
+        /// Debug method to reset and re-seed the database
+        /// WARNING: This deletes all data and starts fresh
+        /// </summary>
+        public async Task ResetAndReseedDatabaseAsync()
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("DEBUG: Starting database reset and reseed...");
+
+                // Get all existing quests and delete them
+                var allQuests = await _databaseService.GetQuestsAsync();
+                foreach (var quest in allQuests)
+                {
+                    await _databaseService.DeleteQuestAsync(quest);
+                }
+
+                System.Diagnostics.Debug.WriteLine($"DEBUG: Deleted {allQuests.Count} quests");
+
+                // Re-seed the database
+                await _dailyQuests.SeedSystemQuestsAsync();
+
+                // Re-initialize
+                Stats = new UserStats();
+                MainThread.BeginInvokeOnMainThread(() => ActiveQuests.Clear());
+
+                await InitializeAsync();
+
+                System.Diagnostics.Debug.WriteLine("DEBUG: Database reset and reseed complete!");
+            }
+            catch (Exception ex)
+            {
+                LogError("Error during database reset", ex);
+            }
+        }
     }
 }
+

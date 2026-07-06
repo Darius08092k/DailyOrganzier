@@ -26,6 +26,7 @@ namespace DailyOrganzier.ViewModels
 
         private readonly IStatsService _statsService;
         private readonly IQuestPopupService _questPopupService;
+        private bool _isInitialized = false;
 
         public MainViewModel(IStatsService statsService, IQuestPopupService questPopupService)
         {
@@ -50,9 +51,29 @@ namespace DailyOrganzier.ViewModels
                     await _statsService.AddQuestAsync(newQuest);
                 }
             });
+        }
 
-            // Initialize quests from database
-            Task.Run(async () => await _statsService.InitializeAsync());
+        /// <summary>
+        /// Initialize the view model with data from the database.
+        /// This should be called from the View's Loaded event or from App startup.
+        /// </summary>
+        public async Task InitializeAsync()
+        {
+            if (_isInitialized)
+                return;
+
+            _isInitialized = true;
+            await _statsService.InitializeAsync();
+        }
+
+        /// <summary>
+        /// Debug command to reset and reseed the database
+        /// </summary>
+        public async Task ResetDatabaseAsync()
+        {
+            _isInitialized = false; // Allow re-initialization
+            await _statsService.ResetAndReseedDatabaseAsync();
         }
     }
 }
+

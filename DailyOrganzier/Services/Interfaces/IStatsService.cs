@@ -13,5 +13,6 @@ namespace DailyOrganzier.Services.Interfaces
         public void CompleteQuest(Quest quest);
         public Task InitializeAsync();
         public Task AddQuestAsync(Quest quest);
+        public Task ResetAndReseedDatabaseAsync(); // For debugging
     }
 }

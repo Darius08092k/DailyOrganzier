@@ -12,5 +12,12 @@ namespace DailyOrganzier.Models
         public string Title { get; set; } = string.Empty;
         public string Type { get; set; } = string.Empty;
         public int XpReward { get; set; }
+
+        // Tracking properties
+        public bool IsCompleted { get; set; } = false;  
+        public bool IsSystemQuest { get; set; } = false;
+
+        // Determine if it is in today's active rotation
+        public bool IsActive { get; set; } = true;
     }
 }

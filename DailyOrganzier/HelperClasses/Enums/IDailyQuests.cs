@@ -7,6 +7,7 @@ namespace DailyOrganzier.HelperClasses.Enums
 {
     public interface IDailyQuests
     {
-        public List<Quest> GetRandomQuest(int numberOfDailyQuests);
+        Task SeedSystemQuestsAsync();
+        Task AssignRandomQuestsAsync(int numberOfDailyQuests);
     }
 }
