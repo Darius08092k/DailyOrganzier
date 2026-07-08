@@ -104,7 +104,6 @@ namespace DailyOrganzier.ViewModels
             IsErrorVisible = false;
             var newQuest = new Quest
             {
-                Id = Guid.NewGuid().ToString(),
                 Title = Title.Trim(),
                 XpReward = (int)XpEntry,
                 Type = SelectedCategory?.ToString(),
